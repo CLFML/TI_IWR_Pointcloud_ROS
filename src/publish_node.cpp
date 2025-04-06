@@ -6,7 +6,8 @@ PublishNode::PublishNode() : Node("publish_node") {
   _running = true;
 
   // Declare parameters with default values
-  this->declare_parameter<std::string>("cfg_path", "../radar/cfg/cfg_default_30fps.cfg");
+  this->declare_parameter<std::string>("cfg_path",
+                                       "../radar/cfg/cfg_default_30fps.cfg");
   this->declare_parameter<std::string>("cli_port", "/dev/pts/2");
   this->declare_parameter<int>("cli_baudrate", 115200);
   this->declare_parameter<std::string>("data_port", "/dev/pts/6");
@@ -20,19 +21,22 @@ PublishNode::PublishNode() : Node("publish_node") {
   this->get_parameter("cli_baudrate", cfg.cli_baudrate);
   this->get_parameter("data_port", cfg.data_port);
   this->get_parameter("data_baudrate", cfg.data_baudrate);
-  cfg.cbfunc = std::bind(&PublishNode::radar_frame_cb, this, std::placeholders::_1);
+  cfg.cbfunc =
+      std::bind(&PublishNode::radar_frame_cb, this, std::placeholders::_1);
 
   std::string publish_topic;
   this->get_parameter("publish_topic", publish_topic);
 
   try {
     _packet_parser = std::make_unique<PacketParser>(cfg);
-  } catch (const std::exception& e) {
-    std::cerr << "[PublishNode]: ERROR! Cannot open serial ports: " << e.what() << '\n';
+  } catch (const std::exception &e) {
+    std::cerr << "[PublishNode]: ERROR! Cannot open serial ports: " << e.what()
+              << '\n';
     exit(1);
   }
 
-  radar_publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>(publish_topic, 10);
+  radar_publisher_ =
+      this->create_publisher<sensor_msgs::msg::PointCloud2>(publish_topic, 10);
 
   _processing_thread = std::thread([this]() {
     while (_running) {
@@ -42,7 +46,8 @@ PublishNode::PublishNode() : Node("publish_node") {
         return !_running || !frame_queue.empty();
       });
 
-      if (!_running) break;
+      if (!_running)
+        break;
 
       radar_frame_t frame;
       {
@@ -60,7 +65,6 @@ PublishNode::PublishNode() : Node("publish_node") {
     }
   });
 }
-
 
 PublishNode::~PublishNode() {
   _running = false;
