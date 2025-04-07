@@ -1,0 +1,6 @@
+{
+    "name": "ti_iwr_pointcloud",
+    "cmake-args":[
+        "-G Ninja"
+    ]
+}

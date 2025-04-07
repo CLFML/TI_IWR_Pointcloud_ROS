@@ -30,3 +30,19 @@
 *.exe
 *.out
 *.app
+
+# ROS2 build folders
+build/
+install/
+log/
+
+
+# Rattler build folders
+output/
+
+# IDE folders
+.vscode/
+
+# Pixi artifacts
+pixi.lock
+.pixi/
